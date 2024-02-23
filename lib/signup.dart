@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:fpjs_pro_plugin/fpjs_pro_plugin.dart';
 import 'package:http/http.dart';
 import 'logged_in.dart';
+import 'dart:convert';
 
 class SignupCard extends StatefulWidget {
   @override
@@ -11,7 +12,7 @@ class SignupCard extends StatefulWidget {
 
 class _SignupCardState extends State<SignupCard> {
   String _fullName = '';
-  String _email = '';
+  String _username = '';
   String _password = '';
 
   @override
@@ -22,8 +23,10 @@ class _SignupCardState extends State<SignupCard> {
 
   Future<void> handleSignup() async {
     try {
+      var deviceData = await FpjsProPlugin.getVisitorData();
 
-      var visitorId = await FpjsProPlugin.getVisitorId();
+      var visitorId = deviceData.visitorId;
+      var requestId = deviceData.requestId;
 
       if (visitorId == null) {
         print('Visitor ID is null');
@@ -36,22 +39,27 @@ class _SignupCardState extends State<SignupCard> {
           Uri.parse(
               'https://fingerprint-flask-server-fbf335614101.herokuapp.com/register'));
       request.fields.addAll({
-        'username': _email,
+        'username': _username,
         'password': _password,
         'full_name': _fullName,
         'visitor_id': visitorId,
+        'request_id': requestId
       });
 
       StreamedResponse response = await request.send();
 
-      if (response.statusCode == 200) {
-        print(await response.stream.bytesToString());
+      var responseStr = await response.stream.bytesToString();
+      final responseJson = json.decode(responseStr);
+      if (responseJson['status'] == 200) {
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => LoggedIn()),
         );
       } else {
-        print(response.reasonPhrase);
+        print("responseJson ${responseJson}");
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Signup failed - ${responseJson['message']}'),
+        ));
       }
     } on PlatformException catch (e) {
       print(e.message);
@@ -78,8 +86,8 @@ class _SignupCardState extends State<SignupCard> {
               ),
               SizedBox(height: 10),
               TextField(
-                decoration: InputDecoration(labelText: 'Email'),
-                onChanged: (value) => _email = value,
+                decoration: InputDecoration(labelText: 'Username'),
+                onChanged: (value) => _username = value,
               ),
               SizedBox(height: 10),
               TextField(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart';
 import 'logged_in.dart';
+import 'dart:convert';
 
 class LoginCard extends StatefulWidget {
   @override
@@ -9,7 +10,7 @@ class LoginCard extends StatefulWidget {
 }
 
 class _LoginCardState extends State<LoginCard> {
-  String _email = '';
+  String _username = '';
   String _password = '';
 
   Future<void> handleLogin() async {
@@ -19,19 +20,22 @@ class _LoginCardState extends State<LoginCard> {
           'POST',
           Uri.parse(
               'https://fingerprint-flask-server-fbf335614101.herokuapp.com/login'));
-      request.fields.addAll({'username': _email, 'password': _password});
+      request.fields.addAll({'username': _username, 'password': _password});
 
       StreamedResponse response = await request.send();
 
-      if (response.statusCode == 200) {
-        print(await response.stream.bytesToString());
-
+      var responseStr = await response.stream.bytesToString();
+      final responseJson = json.decode(responseStr);
+      if (responseJson['status'] == 200) {
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => LoggedIn()),
         );
       } else {
-        print(response.reasonPhrase);
+        print("responseJson ${responseJson}");
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Login failed - ${responseJson['message']}'),
+        ));
       }
     } on PlatformException catch (e) {
       print(e.message);
@@ -49,10 +53,10 @@ class _LoginCardState extends State<LoginCard> {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               TextField(
-                decoration: InputDecoration(labelText: 'Email'),
+                decoration: InputDecoration(labelText: 'Username'),
                 onChanged: (value) {
                   setState(() {
-                    _email = value;
+                    _username = value;
                   });
                 },
               ),
