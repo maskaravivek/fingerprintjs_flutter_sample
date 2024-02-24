@@ -14,6 +14,8 @@ class _SignupCardState extends State<SignupCard> {
   String _fullName = '';
   String _username = '';
   String _password = '';
+  String _visitorId = '';
+  String _requestId = '';
 
   @override
   void initState() {
@@ -23,12 +25,7 @@ class _SignupCardState extends State<SignupCard> {
 
   Future<void> handleSignup() async {
     try {
-      var deviceData = await FpjsProPlugin.getVisitorData();
-
-      var visitorId = deviceData.visitorId;
-      var requestId = deviceData.requestId;
-
-      if (visitorId == null) {
+      if (_visitorId.isEmpty) {
         print('Visitor ID is null');
         return;
       }
@@ -42,8 +39,8 @@ class _SignupCardState extends State<SignupCard> {
         'username': _username,
         'password': _password,
         'full_name': _fullName,
-        'visitor_id': visitorId,
-        'request_id': requestId
+        'visitor_id': _visitorId,
+        'request_id': _requestId
       });
 
       StreamedResponse response = await request.send();
@@ -68,6 +65,11 @@ class _SignupCardState extends State<SignupCard> {
 
   void _initFingerprint() async {
     await FpjsProPlugin.initFpjs('bWE4lFPnSw0agkH9wL2X');
+
+    var deviceData = await FpjsProPlugin.getVisitorData();
+
+    _visitorId = deviceData.visitorId;
+    _requestId = deviceData.requestId;
   }
 
   @override
