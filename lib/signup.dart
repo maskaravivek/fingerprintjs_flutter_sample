@@ -64,7 +64,7 @@ class _SignupCardState extends State<SignupCard> {
   }
 
   void _initFingerprint() async {
-    await FpjsProPlugin.initFpjs('bWE4lFPnSw0agkH9wL2X');
+    await FpjsProPlugin.initFpjs('qWFda4sG98A6q9ashQPA');
 
     var deviceData = await FpjsProPlugin.getVisitorData();
 
