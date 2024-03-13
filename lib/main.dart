@@ -18,11 +18,11 @@ class MainApp extends StatelessWidget {
         length: 2,
         child: Scaffold(
           appBar: AppBar(
-            title: Text('Login & Signup'),
+            title: Text('Log in & Sign up'),
             bottom: TabBar(
               tabs: [
-                Tab(text: 'Login'),
-                Tab(text: 'Signup'),
+                Tab(text: 'Log in'),
+                Tab(text: 'Sign up'),
               ],
             ),
           ),

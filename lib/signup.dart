@@ -30,7 +30,7 @@ class _SignupCardState extends State<SignupCard> {
         return;
       }
 
-      // call the signup API endpoint
+      // call the user registration API endpoint
       var request = MultipartRequest(
           'POST',
           Uri.parse(
@@ -55,7 +55,7 @@ class _SignupCardState extends State<SignupCard> {
       } else {
         print("responseJson ${responseJson}");
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Signup failed - ${responseJson['message']}'),
+          content: Text('Sign up failed - ${responseJson['message']}'),
         ));
       }
     } on PlatformException catch (e) {
@@ -102,7 +102,7 @@ class _SignupCardState extends State<SignupCard> {
                 onPressed: () async {
                   await handleSignup();
                 },
-                child: Text('Signup'),
+                child: Text('Sign up'),
               ),
             ],
           ),
