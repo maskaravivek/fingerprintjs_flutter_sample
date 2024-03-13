@@ -55,7 +55,7 @@ class _SignupCardState extends State<SignupCard> {
       } else {
         print("responseJson ${responseJson}");
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Sign up failed - ${responseJson['message']}'),
+          content: Text('Sign-up failed - ${responseJson['message']}'),
         ));
       }
     } on PlatformException catch (e) {

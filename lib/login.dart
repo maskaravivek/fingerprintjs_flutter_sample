@@ -34,7 +34,7 @@ class _LoginCardState extends State<LoginCard> {
       } else {
         print("responseJson ${responseJson}");
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Log in failed - ${responseJson['message']}'),
+          content: Text('Login failed - ${responseJson['message']}'),
         ));
       }
     } on PlatformException catch (e) {
